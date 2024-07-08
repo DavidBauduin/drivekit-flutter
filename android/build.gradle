@@ -1,8 +1,32 @@
 group = "com.drivequant.drivekit"
 version = "1.0-SNAPSHOT"
 
+def sdkProperties = new Properties()
+def sdkPropertiesFile = rootProject.file('sdk.properties')
+if (sdkPropertiesFile.exists()) {
+    sdkPropertiesFile.withReader('UTF-8') { reader ->
+        sdkProperties.load(reader)
+    }
+}
+
+def minSdkVersion = sdkProperties.getProperty('flutter.minSdkVersion')?.toInteger()
+if (minSdkVersion == null) {
+    minSdkVersion = 25
+}
+
+def targetSdkVersion = sdkProperties.getProperty('flutter.targetSdkVersion')?.toInteger()
+if (targetSdkVersion == null) {
+    targetSdkVersion = 34
+}
+
+def compileSdkVersion = sdkProperties.getProperty('flutter.compileSdkVersion')?.toInteger()
+if (compileSdkVersion == null) {
+    compileSdkVersion = 34
+}
+
 buildscript {
     ext.kotlin_version = "1.7.10"
+    ext.drivekit_version = "2.3.0"
     repositories {
         google()
         mavenCentral()
@@ -21,6 +45,14 @@ allprojects {
     }
 }
 
+rootProject.allprojects {
+    repositories {
+        maven {
+            url "https://maven.drivequant.com/repository/android-sdk/"
+        }
+    }
+}
+
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 
@@ -29,7 +61,7 @@ android {
         namespace = "com.drivequant.drivekit"
     }
 
-    compileSdk = 34
+    compileSdk = compileSdkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -46,12 +78,14 @@ android {
     }
 
     defaultConfig {
-        minSdk = 21
+        minSdk = minSdkVersion
     }
 
     dependencies {
         testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.mockito:mockito-core:5.0.0")
+
+        implementation "com.drivequant.drivekit:drivekit-trip-analysis:$drivekit_version"
     }
 
     testOptions {
