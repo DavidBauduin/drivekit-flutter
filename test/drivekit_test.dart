@@ -7,9 +7,33 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockDrivekitPlatform
     with MockPlatformInterfaceMixin
     implements DrivekitPlatform {
+  String apiKey = 'abcdef123456';
+  String userId = 'toto';
 
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  Future<bool> isDriveKitConfigured() => Future.value(false);
+
+  @override
+  Future<bool> isUserConnected() => Future.value(false);
+
+  @override
+  Future<String?> getApiKey() => Future.value(apiKey);
+
+  @override
+  Future<void> setApiKey(String apiKey) async {
+    this.apiKey = apiKey;
+  }
+
+  @override
+  Future<String?> getUserId() => Future.value(userId);
+
+  @override
+  Future<void> setUserId(String userId) async {
+    this.userId = userId;
+  }
 }
 
 void main() {

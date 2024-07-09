@@ -1,6 +1,6 @@
 package com.drivequant.drivekit
 
-import androidx.annotation.NonNull
+import com.drivequant.drivekit.core.DriveKit
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -22,10 +22,35 @@ class DrivekitPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else {
-      result.notImplemented()
+    when (call.method) {
+        "getPlatformVersion" -> {
+            result.success("Android ${android.os.Build.VERSION.RELEASE}")
+        }
+        "isDriveKitConfigured" -> {
+            result.success(DriveKit.isConfigured())
+        }
+        "isUserConnected" -> {
+            result.success(DriveKit.isUserConnected())
+        }
+        "getApiKey" -> {
+          result.success(DriveKit.getApiKey())
+        }
+        "setApiKey" -> {
+          val apiKey = call.arguments as String
+          DriveKit.setApiKey(apiKey)
+          result.success(null)
+        }
+        "getUserId" -> {
+            result.success(DriveKit.config.userId)
+        }
+        "setUserId" -> {
+            val userId = call.arguments as String
+            DriveKit.setUserId(userId)
+            result.success(null)
+        }
+        else -> {
+          result.notImplemented()
+        }
     }
   }
 

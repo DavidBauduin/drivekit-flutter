@@ -14,4 +14,35 @@ class MethodChannelDrivekit extends DrivekitPlatform {
     final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
+
+  @override
+  Future<bool> isDriveKitConfigured() async {
+    return await methodChannel.invokeMethod<bool>('isDriveKitConfigured') ?? false;
+  }
+  @override
+  Future<bool> isUserConnected() async {
+    return await methodChannel.invokeMethod<bool>('isUserConnected') ?? false;
+  }
+
+  @override
+  Future<String?> getApiKey() async {
+    final apiKey = await methodChannel.invokeMethod<String?>('getApiKey');
+    return apiKey;
+  }
+
+  @override
+  Future<void> setApiKey(String apiKey) async {
+    await methodChannel.invokeMethod<void>('setApiKey', apiKey);
+  }
+
+  @override
+  Future<String?> getUserId() async {
+    final userId = await methodChannel.invokeMethod<String?>('getUserId');
+    return userId;
+  }
+
+  @override
+  Future<void> setUserId(String userId) async {
+    await methodChannel.invokeMethod<void>('setUserId', userId);
+  }
 }

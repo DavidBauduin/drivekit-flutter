@@ -16,34 +16,93 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  bool _isDriveKitConfigured = false;
+  bool _isUserConnected = false;
+  String _apiKey = '';
+  String _userId = '';
+  final apiKeyController = TextEditingController();
+  final userIdController = TextEditingController();
   final _drivekitPlugin = Drivekit();
+
+  @override
+  void dispose() {
+    apiKeyController.dispose();
+    userIdController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    updateIsDriveKitConfigured();
+    updateIsUserConnected();
+    initApiKey();
+    initUserId();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
+  Future<void> updateIsDriveKitConfigured() async {
+    bool isDriveKitConfigured;
     try {
-      platformVersion =
-          await _drivekitPlugin.getPlatformVersion() ?? 'Unknown platform version';
+      isDriveKitConfigured = await _drivekitPlugin.isDriveKitConfigured();
     } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+      isDriveKitConfigured = false;
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
 
     setState(() {
-      _platformVersion = platformVersion;
+      _isDriveKitConfigured = isDriveKitConfigured;
+    });
+  }
+
+  Future<void> updateIsUserConnected() async {
+    bool isUserConnected;
+    try {
+      isUserConnected = await _drivekitPlugin.isUserConnected();
+    } on PlatformException {
+      isUserConnected = false;
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _isUserConnected = isUserConnected;
+    });
+  }
+
+  Future<void> initApiKey() async {
+    String? apiKey;
+    try {
+      apiKey = await _drivekitPlugin.getApiKey();
+    } on PlatformException {
+      apiKey = '';
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      if (apiKey != null) {
+        _apiKey = apiKey;
+      }
+      apiKeyController.text = _apiKey;
+    });
+  }
+
+  Future<void> initUserId() async {
+    String? userId;
+    try {
+      userId = await _drivekitPlugin.getUserId();
+    } on PlatformException {
+      userId = '';
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      if (userId != null) {
+        _userId = userId;
+      }
+      userIdController.text = _userId;
     });
   }
 
@@ -52,10 +111,56 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('DriveKit example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Text('Is DriveKit configured: $_isDriveKitConfigured\n'),
+            ),
+            Center(
+              child: Text('Is user connected: $_isUserConnected\n'),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: TextFormField(
+                controller: apiKeyController,
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  hintText: 'Enter the api key',
+                  labelText: 'Api key',
+                ),
+              ),
+            ),
+            ElevatedButton(
+              child: const Text('Set api key'),
+              onPressed: () {
+                _drivekitPlugin.setApiKey(apiKeyController.text);
+                updateIsDriveKitConfigured();
+                updateIsUserConnected();
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: TextFormField(
+                controller: userIdController,
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  hintText: 'Enter your userId',
+                  labelText: 'UserId',
+                ),
+              ),
+            ),
+            ElevatedButton(
+              child: const Text('Set userId'),
+              onPressed: () {
+                _drivekitPlugin.setUserId(userIdController.text);
+                updateIsDriveKitConfigured();
+                updateIsUserConnected();
+              },
+            ),
+          ],
         ),
       ),
     );
