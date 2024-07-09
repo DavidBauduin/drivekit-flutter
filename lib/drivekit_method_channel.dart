@@ -45,4 +45,13 @@ class MethodChannelDrivekit extends DrivekitPlatform {
   Future<void> setUserId(String userId) async {
     await methodChannel.invokeMethod<void>('setUserId', userId);
   }
+
+  @override
+  Future<bool> isAutoStartEnabled() async {
+    return await methodChannel.invokeMethod<bool>('isAutoStartEnabled') ?? false;
+  }
+  @override
+  Future<void> enableAutoStart(bool enable) async {
+    await methodChannel.invokeMethod<void>('enableAutoStart', enable);
+  }
 }

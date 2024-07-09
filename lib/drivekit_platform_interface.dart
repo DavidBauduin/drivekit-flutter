@@ -37,4 +37,7 @@ abstract class DrivekitPlatform extends PlatformInterface {
 
   Future<String?> getUserId();
   Future<void> setUserId(String userId);
+
+  Future<bool> isAutoStartEnabled();
+  Future<void> enableAutoStart(bool enable);
 }

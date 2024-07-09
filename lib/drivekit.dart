@@ -26,4 +26,11 @@ class Drivekit {
   Future<void> setUserId(String userId) {
     return DrivekitPlatform.instance.setUserId(userId);
   }
+
+  Future<bool> isAutoStartEnabled() {
+    return DrivekitPlatform.instance.isAutoStartEnabled();
+  }
+  Future<void> enableAutoStart(bool enable) {
+    return DrivekitPlatform.instance.enableAutoStart(enable);
+  }
 }

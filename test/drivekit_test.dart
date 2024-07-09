@@ -9,6 +9,7 @@ class MockDrivekitPlatform
     implements DrivekitPlatform {
   String apiKey = 'abcdef123456';
   String userId = 'toto';
+  bool _isAutoStartEnabled = false;
 
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
@@ -33,6 +34,14 @@ class MockDrivekitPlatform
   @override
   Future<void> setUserId(String userId) async {
     this.userId = userId;
+  }
+
+  @override
+  Future<bool> isAutoStartEnabled() => Future.value(_isAutoStartEnabled);
+
+  @override
+  Future<void> enableAutoStart(bool enable) async {
+    _isAutoStartEnabled = enable;
   }
 }
 

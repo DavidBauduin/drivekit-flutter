@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import DriveKitCoreModule
+import DriveKitTripAnalysisModule
 
 public class DrivekitPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -28,6 +29,12 @@ public class DrivekitPlugin: NSObject, FlutterPlugin {
             case "setUserId":
                 let userId = call.arguments as! String
                 DriveKit.shared.setUserId(userId: userId)
+                result(nil)
+            case "isAutoStartEnabled":
+                result(DriveKitTripAnalysis.shared.config.autostart && DriveKitTripAnalysis.shared.config.vehicleAutoStart)
+            case "enableAutoStart":
+                let enableAutoStart = call.arguments as! Bool
+                DriveKitTripAnalysis.shared.activateAutoStart(enable: enableAutoStart)
                 result(nil)
             default:
                 result(FlutterMethodNotImplemented)

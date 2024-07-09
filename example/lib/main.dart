@@ -16,13 +16,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final _drivekitPlugin = Drivekit();
   bool _isDriveKitConfigured = false;
   bool _isUserConnected = false;
+  bool _isAutoStartEnabled = false;
   String _apiKey = '';
   String _userId = '';
   final apiKeyController = TextEditingController();
   final userIdController = TextEditingController();
-  final _drivekitPlugin = Drivekit();
 
   @override
   void dispose() {
@@ -36,6 +37,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     updateIsDriveKitConfigured();
     updateIsUserConnected();
+    updateAutoStartEnabled();
     initApiKey();
     initUserId();
   }
@@ -67,6 +69,21 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _isUserConnected = isUserConnected;
+    });
+  }
+
+  Future<void> updateAutoStartEnabled() async {
+    bool isAutoStartEnabled;
+    try {
+      isAutoStartEnabled = await _drivekitPlugin.isAutoStartEnabled();
+    } on PlatformException {
+      isAutoStartEnabled = false;
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _isAutoStartEnabled = isAutoStartEnabled;
     });
   }
 
@@ -159,6 +176,21 @@ class _MyAppState extends State<MyApp> {
                 updateIsDriveKitConfigured();
                 updateIsUserConnected();
               },
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Row(
+                children: [
+                  const Text('Enabled auto start: '),
+                  Switch(
+                    value: _isAutoStartEnabled,
+                    onChanged: (bool value) {
+                      _drivekitPlugin.enableAutoStart(value);
+                      updateAutoStartEnabled();
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
