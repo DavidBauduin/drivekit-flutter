@@ -44,6 +44,10 @@ public class DrivekitPlugin: NSObject, FlutterPlugin {
                 let enableAutoStart = call.arguments as! Bool
                 DriveKitTripAnalysis.shared.activateAutoStart(enable: enableAutoStart)
                 result(nil)
+            case "requestIOSLocationPermission":
+                DispatchQueue.main.async {
+                    DKDiagnosisHelper.shared.requestPermission(.location)
+                }
             default:
                 result(FlutterMethodNotImplemented)
         }

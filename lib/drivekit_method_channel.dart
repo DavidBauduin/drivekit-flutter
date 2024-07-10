@@ -116,4 +116,9 @@ class MethodChannelDrivekit extends DrivekitPlatform {
   Future<void> enableAutoStart(bool enable) async {
     await methodChannel.invokeMethod<void>('enableAutoStart', enable);
   }
+
+  @override
+  Future<void> requestIOSLocationPermission() async {
+    await methodChannel.invokeMethod<void>('requestIOSLocationPermission');
+  }
 }
