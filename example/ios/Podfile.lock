@@ -1,9 +1,12 @@
 PODS:
   - drivekit (0.0.1):
+    - DriveKitPermissionsUtilsUI (= 2.3.0)
     - DriveKitTripAnalysis (= 2.3.0)
     - Flutter
   - DriveKitBeaconUtils (2.3.0):
     - DriveKitCore (= 2.3.0)
+  - DriveKitCommonUI (2.3.0):
+    - DriveKitCore
   - DriveKitCore (2.3.0):
     - DriveKitNetworking (= 2.3.0)
   - DriveKitDBTripAccess (2.3.0):
@@ -12,6 +15,9 @@ PODS:
     - DriveKitBeaconUtils (= 2.3.0)
     - DriveKitCore (= 2.3.0)
   - DriveKitNetworking (2.3.0)
+  - DriveKitPermissionsUtilsUI (2.3.0):
+    - DriveKitCommonUI (= 2.3.0)
+    - DriveKitCore
   - DriveKitTripAnalysis (2.3.0):
     - DriveKitBeaconUtils (= 2.3.0)
     - DriveKitCore (= 2.3.0)
@@ -29,10 +35,12 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - DriveKitBeaconUtils
+    - DriveKitCommonUI
     - DriveKitCore
     - DriveKitDBTripAccess
     - DriveKitDBVehicleAccess
     - DriveKitNetworking
+    - DriveKitPermissionsUtilsUI
     - DriveKitTripAnalysis
 
 EXTERNAL SOURCES:
@@ -44,12 +52,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/integration_test/ios"
 
 SPEC CHECKSUMS:
-  drivekit: 71cef7aa82fc845e6aa75ba38422386040778dae
+  drivekit: adafa35442e12aa53fcd2e9e1c96ab73073e45a6
   DriveKitBeaconUtils: c19269711ba3bb7317b5808f7d1775307c925514
+  DriveKitCommonUI: 9cf92bf7c6ea0a25202d6409ad80763f880125b5
   DriveKitCore: 8fc1527e01ac0490070c72a103e6dbba1019ae2a
   DriveKitDBTripAccess: e92ac682eff2c8fbb4448337c9df445dbfbb6672
   DriveKitDBVehicleAccess: c76551dcc63baa68da45af1d07c2ce5f777ac204
   DriveKitNetworking: 14eb5faebd4ae48b97dc2d9cc0ca13fb35129dea
+  DriveKitPermissionsUtilsUI: 83445cf81c89d39c332e999e0fe4aed278290c7e
   DriveKitTripAnalysis: 4788ac581b699395c1680806e1575face196cc35
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   integration_test: ce0a3ffa1de96d1a89ca0ac26fca7ea18a749ef4

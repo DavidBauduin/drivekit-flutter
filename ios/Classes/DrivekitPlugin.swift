@@ -2,6 +2,7 @@ import Flutter
 import UIKit
 import DriveKitCoreModule
 import DriveKitTripAnalysisModule
+import DriveKitPermissionsUtilsUI
 
 public class DrivekitPlugin: NSObject, FlutterPlugin {
     private let channel: FlutterMethodChannel
@@ -44,9 +45,12 @@ public class DrivekitPlugin: NSObject, FlutterPlugin {
                 let enableAutoStart = call.arguments as! Bool
                 DriveKitTripAnalysis.shared.activateAutoStart(enable: enableAutoStart)
                 result(nil)
-            case "requestIOSLocationPermission":
-                DispatchQueue.main.async {
-                    DKDiagnosisHelper.shared.requestPermission(.location)
+            case "requestPermissions":
+                let keyWindow = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.windows.first
+                if let topController = keyWindow?.rootViewController {
+                    DriveKitPermissionsUtilsUI.shared.showPermissionViews([.location, .activity], parentViewController: topController) {
+                            //
+                    }
                 }
             default:
                 result(FlutterMethodNotImplemented)

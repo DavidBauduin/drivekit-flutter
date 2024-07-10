@@ -118,7 +118,7 @@ class MethodChannelDrivekit extends DrivekitPlatform {
   }
 
   @override
-  Future<void> requestIOSLocationPermission() async {
-    await methodChannel.invokeMethod<void>('requestIOSLocationPermission');
+  Future<void> requestPermissions() async {
+    await methodChannel.invokeMethod<void>('requestPermissions');
   }
 }
