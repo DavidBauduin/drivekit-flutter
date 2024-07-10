@@ -1,6 +1,10 @@
 package com.drivequant.drivekit
 
 import com.drivequant.drivekit.core.DriveKit
+import com.drivequant.drivekit.core.driver.UpdateUserIdStatus
+import com.drivequant.drivekit.core.driver.deletion.DeleteAccountStatus
+import com.drivequant.drivekit.core.networking.DriveKitListener
+import com.drivequant.drivekit.core.networking.RequestError
 import com.drivequant.drivekit.tripanalysis.DriveKitTripAnalysis
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -10,7 +14,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 
 /** DrivekitPlugin */
-class DrivekitPlugin : FlutterPlugin, MethodCallHandler {
+class DrivekitPlugin : FlutterPlugin, MethodCallHandler, DriveKitListener {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -20,6 +24,8 @@ class DrivekitPlugin : FlutterPlugin, MethodCallHandler {
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "drivekit")
         channel.setMethodCallHandler(this)
+
+        DriveKit.addDriveKitListener(this)
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
@@ -76,5 +82,25 @@ class DrivekitPlugin : FlutterPlugin, MethodCallHandler {
         val enable = call.arguments as Boolean
         DriveKitTripAnalysis.activateAutoStart(enable)
         result.success(null)
+    }
+
+    override fun onAccountDeleted(status: DeleteAccountStatus) {
+        channel.invokeMethod("onAccountDeleted", status.name)
+    }
+
+    override fun onAuthenticationError(errorType: RequestError) {
+        channel.invokeMethod("onAuthenticationError", errorType.name)
+    }
+
+    override fun onConnected() {
+        channel.invokeMethod("onConnected", null)
+    }
+
+    override fun onDisconnected() {
+        channel.invokeMethod("onDisconnected", null)
+    }
+
+    override fun userIdUpdateStatus(status: UpdateUserIdStatus, userId: String?) {
+        channel.invokeMethod("userIdUpdateStatus", mapOf("status" to status.name, "userId" to userId))
     }
 }

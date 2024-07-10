@@ -1,9 +1,15 @@
 
+import 'package:drivekit/data/drivekit_data.dart';
+
 import 'drivekit_platform_interface.dart';
 
 class Drivekit {
   Future<String?> getPlatformVersion() {
     return DrivekitPlatform.instance.getPlatformVersion();
+  }
+
+  Future<void> setDriveKitListener(DriveKitListener driveKitListener) {
+    return DrivekitPlatform.instance.setDriveKitListener(driveKitListener);
   }
 
   Future<bool> isDriveKitConfigured() {

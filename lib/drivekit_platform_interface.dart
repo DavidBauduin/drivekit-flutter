@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:drivekit/data/drivekit_data.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'drivekit_method_channel.dart';
@@ -28,6 +29,8 @@ abstract class DrivekitPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<void> setDriveKitListener(DriveKitListener? driveKitListener);
 
   Future<bool> isDriveKitConfigured();
   Future<bool> isUserConnected();

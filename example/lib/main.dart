@@ -1,3 +1,4 @@
+import 'package:drivekit/data/drivekit_data.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -15,7 +16,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> implements DriveKitListener {
   final _drivekitPlugin = Drivekit();
   bool _isDriveKitConfigured = false;
   bool _isUserConnected = false;
@@ -35,6 +36,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    _drivekitPlugin.setDriveKitListener(this);
     updateIsDriveKitConfigured();
     updateIsUserConnected();
     updateAutoStartEnabled();
@@ -196,5 +198,32 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  @override
+  void onAccountDeleted(DeleteAccountStatus status) {
+    debugPrint('===== onAccountDeleted - status = $status');
+  }
+
+  @override
+  void onAuthenticationError(RequestError errorType) {
+    debugPrint('===== onAuthenticationError - errorType = $errorType');
+  }
+
+  @override
+  void onConnected() {
+    updateIsUserConnected();
+    debugPrint('===== onConnected');
+  }
+
+  @override
+  void onDisconnected() {
+    updateIsUserConnected();
+    debugPrint('===== onDisconnected');
+  }
+
+  @override
+  void userIdUpdateStatus(UpdateUserIdStatus status, String? userId) {
+    debugPrint('===== userIdUpdateStatus - status = $status - userId = $userId');
   }
 }
