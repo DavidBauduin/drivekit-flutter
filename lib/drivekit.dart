@@ -43,4 +43,10 @@ class Drivekit {
   Future<void> requestIOSLocationPermission() {
     return DrivekitPlatform.instance.requestIOSLocationPermission();
   }
+  Future<void> requestIOSActivityPermission() {
+    return DrivekitPlatform.instance.requestIOSActivityPermission();
+  }
+  Future<void> requestIOSBluetoothPermission() {
+    return DrivekitPlatform.instance.requestIOSBluetoothPermission();
+  }
 }

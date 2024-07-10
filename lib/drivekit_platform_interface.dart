@@ -45,5 +45,7 @@ abstract class DrivekitPlatform extends PlatformInterface {
   Future<void> enableAutoStart(bool enable);
 
   Future<void> requestIOSLocationPermission();
+  Future<void> requestIOSActivityPermission();
+  Future<void> requestIOSBluetoothPermission();
 
 }

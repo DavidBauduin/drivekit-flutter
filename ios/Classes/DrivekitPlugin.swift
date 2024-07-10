@@ -48,6 +48,14 @@ public class DrivekitPlugin: NSObject, FlutterPlugin {
                 DispatchQueue.main.async {
                     DKDiagnosisHelper.shared.requestPermission(.location)
                 }
+            case "requestIOSActivityPermission":
+                DispatchQueue.main.async {
+                    DKDiagnosisHelper.shared.requestPermission(.activity)
+                }
+            case "requestIOSBluetoothPermission":
+                DispatchQueue.main.async {
+                    DKDiagnosisHelper.shared.requestPermission(.bluetooth)
+                }
             default:
                 result(FlutterMethodNotImplemented)
         }

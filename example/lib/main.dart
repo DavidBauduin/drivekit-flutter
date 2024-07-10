@@ -194,10 +194,22 @@ class _MyAppState extends State<MyApp> implements DriveKitListener {
                 ],
               ),
             ),
-                        ElevatedButton(
+            ElevatedButton(
               child: const Text('request location permission'),
               onPressed: () {
                 _drivekitPlugin.requestIOSLocationPermission();
+              },
+            ),
+            ElevatedButton(
+              child: const Text('request activity permission'),
+              onPressed: () {
+                _drivekitPlugin.requestIOSActivityPermission();
+              },
+            ),
+            ElevatedButton(
+              child: const Text('request bluetooth permission'),
+              onPressed: () {
+                _drivekitPlugin.requestIOSBluetoothPermission();
               },
             ),
           ],
