@@ -132,79 +132,91 @@ class _MyAppState extends State<MyApp> implements DriveKitListener {
         appBar: AppBar(
           title: const Text('DriveKit example app'),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: Text('Is DriveKit configured: $_isDriveKitConfigured\n'),
-            ),
-            Center(
-              child: Text('Is user connected: $_isUserConnected\n'),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: TextFormField(
-                controller: apiKeyController,
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  hintText: 'Enter the api key',
-                  labelText: 'Api key',
-                ),
-              ),
-            ),
-            ElevatedButton(
-              child: const Text('Set api key'),
-              onPressed: () {
-                _drivekitPlugin.setApiKey(apiKeyController.text);
-                updateIsDriveKitConfigured();
-                updateIsUserConnected();
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: TextFormField(
-                controller: userIdController,
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  hintText: 'Enter your userId',
-                  labelText: 'UserId',
-                ),
-              ),
-            ),
-            ElevatedButton(
-              child: const Text('Set userId'),
-              onPressed: () {
-                _drivekitPlugin.setUserId(userIdController.text);
-                updateIsDriveKitConfigured();
-                updateIsUserConnected();
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Row(
-                children: [
-                  const Text('Enabled auto start: '),
-                  Switch(
-                    value: _isAutoStartEnabled,
-                    onChanged: (bool value) {
-                      _drivekitPlugin.enableAutoStart(value);
-                      updateAutoStartEnabled();
-                    },
-                  ),
-                ],
-              ),
-            ),
-                        ElevatedButton(
-              child: const Text('request permissions'),
-              onPressed: () {
-                _drivekitPlugin.requestPermissions();
-              },
-            ),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          child: ListView(
+            children: [
+              _buildIsDriveKitConfiguredWidget(),
+              _buildIsUserConnectedWidget(),
+              _buildPermissionButton(),
+              _buildApiKeyWidget(),
+              _buildUserIdWidget(),
+              _buildAutoStartSwitch(),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _buildIsDriveKitConfiguredWidget() => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+    child: Center(
+      child: Text('Is DriveKit configured: $_isDriveKitConfigured'),
+    ),
+  );
+
+  Widget _buildIsUserConnectedWidget() => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+      child: Center(
+        child: Text('Is user connected: $_isUserConnected'),
+      ),
+  );
+
+  Widget _buildPermissionButton() => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 18),
+    child: ElevatedButton(
+      child: const Text('request permissions'),
+      onPressed: () {
+        _drivekitPlugin.requestPermissions();
+      },
+    ),
+  );
+
+  Widget _buildApiKeyWidget() => _buildEditText(apiKeyController, "Api key", _drivekitPlugin.setApiKey);
+
+  Widget _buildUserIdWidget() => _buildEditText(userIdController, "User id", _drivekitPlugin.setUserId);
+
+  Widget _buildEditText(TextEditingController controller, String title, Function(String) callback) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            border: const UnderlineInputBorder(),
+            hintText: 'Enter $title',
+            labelText: title,
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            callback(controller.text);
+            updateIsDriveKitConfigured();
+            updateIsUserConnected();
+          },
+          child: Text('Set $title'),
+        ),
+      ],
+    ),
+  );
+
+  Widget _buildAutoStartSwitch() => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+    child: Row(
+      children: [
+        const Text('Enabled auto start: '),
+        Switch(
+          value: _isAutoStartEnabled,
+          onChanged: (bool value) {
+            _drivekitPlugin.enableAutoStart(value);
+            updateAutoStartEnabled();
+          },
+        ),
+      ],
+    ),
+  );
 
   @override
   void onAccountDeleted(DeleteAccountStatus status) {
