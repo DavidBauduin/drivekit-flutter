@@ -40,7 +40,7 @@ class Drivekit {
     return DrivekitPlatform.instance.enableAutoStart(enable);
   }
 
-  Future<void> requestIOSLocationPermission() {
-    return DrivekitPlatform.instance.requestIOSLocationPermission();
+  Future<void> requestPermissions() {
+    return DrivekitPlatform.instance.requestPermissions();
   }
 }

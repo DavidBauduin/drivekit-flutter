@@ -195,9 +195,9 @@ class _MyAppState extends State<MyApp> implements DriveKitListener {
               ),
             ),
                         ElevatedButton(
-              child: const Text('request location permission'),
+              child: const Text('request permissions'),
               onPressed: () {
-                _drivekitPlugin.requestIOSLocationPermission();
+                _drivekitPlugin.requestPermissions();
               },
             ),
           ],

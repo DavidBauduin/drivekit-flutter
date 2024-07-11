@@ -27,6 +27,7 @@ if (compileSdkVersion == null) {
 buildscript {
     ext.kotlin_version = "1.7.10"
     ext.drivekit_version = "2.4-beta1"
+    ext.drivekitui_version = "2.4-beta1"
     repositories {
         google()
         mavenCentral()
@@ -86,6 +87,7 @@ android {
         testImplementation("org.mockito:mockito-core:5.0.0")
 
         api "com.drivequant.drivekit:drivekit-trip-analysis:$drivekit_version"
+        implementation "com.drivequant.drivekit:drivekit-permissions-utils-ui:$drivekitui_version"
     }
 
     testOptions {

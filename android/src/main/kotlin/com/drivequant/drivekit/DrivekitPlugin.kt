@@ -1,25 +1,33 @@
 package com.drivequant.drivekit
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.core.app.ActivityCompat.requestPermissions
 import com.drivequant.drivekit.core.DriveKit
 import com.drivequant.drivekit.core.driver.UpdateUserIdStatus
 import com.drivequant.drivekit.core.driver.deletion.DeleteAccountStatus
 import com.drivequant.drivekit.core.networking.DriveKitListener
 import com.drivequant.drivekit.core.networking.RequestError
+import com.drivequant.drivekit.permissionsutils.PermissionsUtilsUI
+import com.drivequant.drivekit.permissionsutils.permissions.listener.PermissionViewListener
 import com.drivequant.drivekit.tripanalysis.DriveKitTripAnalysis
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 
 /** DrivekitPlugin */
-class DrivekitPlugin : FlutterPlugin, MethodCallHandler, DriveKitListener {
+class DrivekitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, DriveKitListener {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
+    private var activity: Activity? = null
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "drivekit")
@@ -38,6 +46,7 @@ class DrivekitPlugin : FlutterPlugin, MethodCallHandler, DriveKitListener {
             "setUserId" -> setUserId(call, result)
             "isAutoStartEnabled" -> isAutoStartEnabled(result)
             "enableAutoStart" -> enableAutoStart(call, result)
+            "requestPermissions" -> requestPermissions(result)
             else -> result.notImplemented()
         }
     }
@@ -84,6 +93,19 @@ class DrivekitPlugin : FlutterPlugin, MethodCallHandler, DriveKitListener {
         result.success(null)
     }
 
+    private fun requestPermissions(result: Result) {
+        activity?.let {
+            PermissionsUtilsUI.initialize()
+            PermissionsUtilsUI.showPermissionViews(it, object : PermissionViewListener {
+                override fun onFinish() {
+                    Toast.makeText(it, "👍", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+        result.success(null)
+    }
+
+
     override fun onAccountDeleted(status: DeleteAccountStatus) {
         channel.invokeMethod("onAccountDeleted", status.name)
     }
@@ -102,5 +124,22 @@ class DrivekitPlugin : FlutterPlugin, MethodCallHandler, DriveKitListener {
 
     override fun userIdUpdateStatus(status: UpdateUserIdStatus, userId: String?) {
         channel.invokeMethod("userIdUpdateStatus", mapOf("status" to status.name, "userId" to userId))
+    }
+
+
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        this.activity = binding.activity
+    }
+
+    override fun onDetachedFromActivityForConfigChanges() {
+        this.activity = null
+    }
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        this.activity = binding.activity
+    }
+
+    override fun onDetachedFromActivity() {
+        this.activity = null
     }
 }
