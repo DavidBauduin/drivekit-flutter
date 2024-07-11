@@ -30,3 +30,20 @@ enum UpdateUserIdStatus {
   alreadyUsed,
   savedForRepost,
 }
+
+abstract class DKDeviceConfigurationListener {
+  void onDeviceConfigurationChanged(DKDeviceConfigurationEventType eventType, bool isValid);
+}
+
+enum DKDeviceConfigurationEventType {
+  activityPermission,
+  locationPermission,
+  bluetoothPermission,
+  notificationPermission,
+  nearbyDevicesPermission,
+  autoResetPermission,
+  locationSensor,
+  bluetoothSensor,
+  lowPowerMode,
+  appBatteryOptimisation,
+}

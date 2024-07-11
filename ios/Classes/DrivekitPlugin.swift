@@ -46,10 +46,12 @@ public class DrivekitPlugin: NSObject, FlutterPlugin {
                 DriveKitTripAnalysis.shared.activateAutoStart(enable: enableAutoStart)
                 result(nil)
             case "requestPermissions":
-                let keyWindow = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.windows.first
-                if let topController = keyWindow?.rootViewController {
-                    DriveKitPermissionsUtilsUI.shared.showPermissionViews([.location, .activity], parentViewController: topController) {
-                            //
+                DispatchQueue.main.async {
+                    let keyWindow = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.windows.first
+                    if let topController = keyWindow?.rootViewController {
+                        DriveKitPermissionsUtilsUI.shared.showPermissionViews([.location, .activity], parentViewController: topController) {
+                                //
+                        }
                     }
                 }
             default:
@@ -143,6 +145,37 @@ private extension RequestError {
                 return "LIMIT_REACHED"
             case .unknownError:
                 return "UNKNOWN_ERROR"
+            @unknown default:
+                return ""
+        }
+    }
+}
+
+extension DrivekitPlugin: DKDeviceConfigurationDelegate {
+    public func deviceConfigurationDidChange(event: DriveKitCoreModule.DKDeviceConfigurationEvent) {
+        DispatchQueue.main.async {
+            self.channel.invokeMethod("onDeviceConfigurationChanged", arguments: ["eventType": event.type.stringValue, "isValid": event.isValid])
+        }
+    }
+}
+
+extension DKDeviceConfigurationEventType {
+    var stringValue: String {
+        switch self {
+            case .locationPermission:
+                return "locationPermission"
+            case .activityPermission:
+                return "activityPermission"
+            case .bluetoothPermission:
+                return "bluetoothPermission"
+            case .notificationPermission:
+                return "notificationPermission"
+            case .locationSensor:
+                return "locationSensor"
+            case .bluetoothSensor:
+                return "bluetoothSensor"
+            case .lowPowerMode:
+                return "lowPowerMode"
             @unknown default:
                 return ""
         }

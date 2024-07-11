@@ -78,6 +78,39 @@ class MethodChannelDrivekit extends DrivekitPlatform {
   }
 
   @override
+  Future<void> setDeviceConfigurationListener(DKDeviceConfigurationListener? deviceConfigurationListener) async {
+    if (deviceConfigurationListener == null) {
+      methodChannel.setMethodCallHandler(null);
+    } else {
+      methodChannel.setMethodCallHandler((MethodCall call) async {
+        switch (call.method) {
+          case 'onDeviceConfigurationChanged': {
+            final eventType = call.arguments['eventType'] as String;
+            final isValid = call.arguments['isValid'] as bool;
+            deviceConfigurationListener.onDeviceConfigurationChanged(_parseDeviceConfigurationEventType(eventType), isValid);
+          }
+          default: throw UnimplementedError('Unknown method: ${call.method}');
+        }
+      });
+    }
+  }
+  DKDeviceConfigurationEventType _parseDeviceConfigurationEventType(String eventType) {
+    switch (eventType) {
+      case 'locationPermission': return DKDeviceConfigurationEventType.locationPermission;
+      case 'activityPermission': return DKDeviceConfigurationEventType.activityPermission;
+      case 'bluetoothPermission': return DKDeviceConfigurationEventType.bluetoothPermission;
+      case 'nearbyDevicesPermission': return DKDeviceConfigurationEventType.nearbyDevicesPermission;
+      case 'notificationPermission': return DKDeviceConfigurationEventType.notificationPermission;
+      case 'autoResetPermission': return DKDeviceConfigurationEventType.autoResetPermission;
+      case 'locationSensor': return DKDeviceConfigurationEventType.locationSensor;
+      case 'bluetoothSensor': return DKDeviceConfigurationEventType.bluetoothSensor;
+      case 'appBatteryOptimisation': return DKDeviceConfigurationEventType.appBatteryOptimisation;
+      case 'lowPowerMode': return DKDeviceConfigurationEventType.lowPowerMode;
+      default: throw ArgumentError('Unknown DKDeviceConfigurationEventType: $eventType');
+    }
+  }
+
+  @override
   Future<bool> isDriveKitConfigured() async {
     return await methodChannel.invokeMethod<bool>('isDriveKitConfigured') ?? false;
   }

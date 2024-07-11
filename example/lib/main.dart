@@ -244,4 +244,9 @@ class _MyAppState extends State<MyApp> implements DriveKitListener {
   void userIdUpdateStatus(UpdateUserIdStatus status, String? userId) {
     debugPrint('===== userIdUpdateStatus - status = $status - userId = $userId');
   }
+
+  @override
+  void onDeviceConfigurationChanged(DKDeviceConfigurationEventType eventType, bool isValid) {
+    debugPrint('===== onDeviceConfigurationChanged - eventType = $eventType - isValid = $isValid');
+  }
 }
